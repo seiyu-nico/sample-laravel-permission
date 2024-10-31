@@ -21,6 +21,15 @@
                 <div class="p-6 text-gray-900">
                     {{ $company->name }}
                 </div>
+                <div class="p-6 text-gray-900">
+                    @hasrole('company_admin')
+                        {{ __('You are a company admin') }}
+                    @endhasrole
+                    @hasrole('company_member')
+                        {{ __('You are a company member') }}
+                    @endhasrole
+
+                </div>
             </div>
         </div>
     </div>

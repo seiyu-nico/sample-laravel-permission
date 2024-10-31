@@ -15,7 +15,7 @@
                         <div class="mt-4">
                             <select id="company_id" class="block mt-1 w-1/2" name="company_id" :value="old('company_id')" required>
                                 @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                    <option value="{{ $company->id }}" @selected($company->id === $current_company_id)>{{ $company->name }}</option>
                                 @endforeach
                             </select>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
