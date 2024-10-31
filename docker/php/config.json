@@ -1,0 +1,41 @@
+{
+  "settings": {
+      "http": {
+          "max_body_size": 104857600,
+          "server_version": true,
+          "send_timeout": 180
+      }
+  },
+  "listeners": {
+      "*:80": {
+          "pass": "routes"
+      }
+  },
+  "routes": [
+      {
+          "match": {
+              "uri": "!/index.php"
+          },
+          "action": {
+              "share": "/var/www/html/public$uri",
+              "fallback": {
+                  "pass": "applications/laravel"
+              }
+          }
+      }
+  ],
+  "applications": {
+      "laravel": {
+          "type": "php",
+          "root": "/var/www/html/public/",
+          "script": "index.php",
+          "user": "root",
+          "group": "root",
+          "processes": {
+              "max": 5,
+              "spare": 1,
+              "idle_timeout": 300
+          }
+      }
+  }
+}

@@ -1,0 +1,36 @@
+services:
+  sample.laravel.permission:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - ENV=${ENV:-local}
+    volumes:
+      - ./docker/php/config.json:/docker-entrypoint.d/config.json
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./:/var/www/html
+    expose:
+      - 80
+    networks:
+      web:
+      dev-container:
+    entrypoint: [ ./docker/commands/entrypoint.sh ]
+    environment:
+      UID: ${UID:-1000}
+      GID: ${GID:-1000}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.sample-laravel-permission.rule=Host(`${APP_DOMEIN}`)"
+      - "traefik.http.routers.sample-laravel-permission.tls=true"
+      - "traefik.http.routers.sample-laravel-permission.tls.certresolver=zerossl"
+
+networks:
+  web:
+    external: true
+  dev-container:
+    external: true
+  anikar:
+    external: true
