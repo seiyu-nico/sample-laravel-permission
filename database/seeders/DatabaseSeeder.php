@@ -17,16 +17,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $companies = Company::factory(3)->create();
+        // 会社作成
+        Company::factory(3)->create();
 
-        $companies->each(function ($company) {
-            // 会社の最初のユーザを作成
-            User::factory(1)->create([
-                'email' => "test{$company->id}@test.com",
-                'password' => 'password',
-                'company_id' => $company->id,
-            ]);
-        });
+        // ユーザー作成
+        User::factory(1)->create(['email' => 'test1@test.com', 'password' => 'password', 'company_id' => 1]);
+        User::factory(1)->create(['email' => 'test2@test.com', 'password' => 'password', 'company_id' => 2]);
+        User::factory(1)->create(['email' => 'test3@test.com', 'password' => 'password', 'company_id' => 3]);
 
         // 会社とユーザーの紐付け
         UserCompany::create([
@@ -46,14 +43,16 @@ class DatabaseSeeder extends Seeder
             'company_id' => 3,
         ]);
 
+        // スーパー管理者ユーザー
+        User::create([
+            'name' => 'admin',
+            'email' => 'admin@test.com',
+            'password' => 'password',
+        ]);
+
         // パーミッション
-        $permissions = [
-            'company.show',
-            'company.edit',
-        ];
-        foreach ($permissions as $permission) {
-            Permission::updateOrCreate(['name' => $permission]);
-        }
+        Permission::updateOrCreate(['name' => 'company.show']);
+        Permission::updateOrCreate(['name' => 'company.edit']);
 
         // 会社ごとロールを作成
         $c1_admin_role = Role::updateOrCreate(['name' => 'company_admin', 'team_id' => 1], ['guard_name' => 'web']);
@@ -71,18 +70,33 @@ class DatabaseSeeder extends Seeder
         $c3_admin_role->givePermissionTo(['company.show', 'company.edit']);
         $c3_member_role->givePermissionTo(['company.show']);
 
-
         // ユーザにロールを付与
         setPermissionsTeamId(1);
-        User::find(1)->assignRole($c1_admin_role);
+        User::find(1)->assignRole($c1_admin_role); // 会社1の管理者
+        setPermissionsTeamId(2);
+        User::find(1)->assignRole($c2_member_role); // 会社2のメンバー
 
         setPermissionsTeamId(2);
-        User::find(1)->assignRole($c2_member_role);
-        User::find(2)->assignRole($c2_admin_role);
+        User::find(2)->assignRole($c2_admin_role); // 会社2の管理者
 
         setPermissionsTeamId(3);
-        User::find(3)->assignRole($c3_admin_role);
+        User::find(3)->assignRole($c3_admin_role); // 会社3の管理者
 
+        // スーパー管理者ユーザーの設定
+        // 全会社の管理者ユーザーにロールを付与
+        $admin = User::find(4);
+        foreach (Company::all() as $company) {
+            setPermissionsTeamId($company->id);
+            $role = Role::where(['name' => 'company_admin', 'team_id' => $company->id])->first();
+            $admin->assignRole($role);
+            $admin->companies()->attach($company->id);
+        }
 
+        // スーパー管理者だけが持つ権限
+        setPermissionsTeamId(null);
+        $permission = Permission::updateOrCreate(['name' => 'super_admin']);
+        $super_role = Role::updateOrCreate(['name' => 'super_admin', 'team_id' => null], ['guard_name' => 'web']);
+        $super_role->givePermissionTo($permission);
+        $admin->assignRole($super_role);
     }
 }

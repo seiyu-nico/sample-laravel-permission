@@ -28,6 +28,7 @@ class SetPermissionTeam
         }
 
         setPermissionsTeamId($company_id);
+
         return $next($request);
     }
 }

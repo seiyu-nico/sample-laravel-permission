@@ -14,6 +14,9 @@ Route::middleware([\App\Http\Middleware\SetPermissionTeam::class])->group(functi
     Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 });
 
+// TODO: ここでエラーが発生している
+Route::view('/admin', 'admin')->middleware(['auth', 'verified', 'role:super_admin'])->name('super-admin');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

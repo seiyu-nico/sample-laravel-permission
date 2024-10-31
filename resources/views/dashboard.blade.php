@@ -28,7 +28,6 @@
                     @hasrole('company_member')
                         {{ __('You are a company member') }}
                     @endhasrole
-
                 </div>
             </div>
         </div>

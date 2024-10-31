@@ -23,6 +23,13 @@
                         </x-nav-link>
                     </div>
                 @endif
+                @if (Auth::user()->hasGlobalRole('super_admin'))
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('super-admin')" :active="request()->routeIs('super-admin')">
+                        {{ __('Super Admin') }}
+                    </x-nav-link>
+                </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
