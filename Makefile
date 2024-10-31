@@ -121,7 +121,7 @@ install-packages-laravel-ide-helper:
 install-packages-larastan:
 	docker compose exec sample.laravel.permission composer require --dev nunomaduro/larastan
 	if type "jq" > /dev/null 2>&1; then \
-		cp ./src/composer.json ./src/composer.json.tmp; \
-		jq --indent 4 '.scripts |= .+{"phpstan": "./vendor/bin/phpstan analyse --xdebug"}' ./src/composer.json.tmp  > ./src/composer.json; \
-		rm -f ./src/composer.json.tmp; \
+		cp ./composer.json ./composer.json.tmp; \
+		jq --indent 4 '.scripts |= .+{"phpstan": "./vendor/bin/phpstan analyse --xdebug"}' ./composer.json.tmp  > ./composer.json; \
+		rm -f ./composer.json.tmp; \
 	fi
