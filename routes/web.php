@@ -10,7 +10,7 @@ Route::get('/', function () {
 Route::get('/select-company', [\App\Http\Controllers\SelectCompanyController::class, 'show'])->middleware(['auth', 'verified'])->name('select-company');
 Route::post('/select-company', [\App\Http\Controllers\SelectCompanyController::class, 'select'])->middleware(['auth', 'verified'])->name('select-company');
 
-Route::middleware([\App\Http\Middleware\CurrentCompany::class])->group(function () {
+Route::middleware([\App\Http\Middleware\SetPermissionTeam::class])->group(function () {
     Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 });
 

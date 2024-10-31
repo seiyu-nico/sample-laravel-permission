@@ -4,9 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
-class CurrentCompany
+class SetPermissionTeam
 {
     /**
      * Handle an incoming request.
@@ -15,10 +17,17 @@ class CurrentCompany
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (is_null($request->cookie('company_id'))) {
+        $company_id = Cookie::get('company_id');
+        if (is_null($company_id)) {
             return redirect()->route('select-company');
         }
 
+        $company = Auth::user()->companies()->where('company_id', $company_id)->first();
+        if (is_null($company)) {
+            return redirect()->route('select-company');
+        }
+
+        setPermissionsTeamId($company_id);
         return $next($request);
     }
 }

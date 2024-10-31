@@ -22,6 +22,7 @@ class SelectCompanyController extends Controller
 
         return view('select-company', [
             'companies' => $companies,
+            'current_company_id' => (int) Cookie::get('company_id'),
         ]);
     }
 
