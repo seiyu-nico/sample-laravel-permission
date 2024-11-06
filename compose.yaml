@@ -32,5 +32,3 @@ networks:
     external: true
   dev-container:
     external: true
-  anikar:
-    external: true
