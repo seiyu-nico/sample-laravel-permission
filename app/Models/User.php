@@ -85,20 +85,4 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Company::class, 'user_companies');
     }
-
-    public function hasGlobalRole(string $role_name): bool
-    {
-        try {
-            $current_team_id = getPermissionsTeamId();
-            setPermissionsTeamId(null);
-            $this->unsetRelation('roles')->unsetRelation('permissions');
-
-            return $this->hasRole($role_name);
-        } catch (\Exception $e) {
-            throw $e;
-        } finally {
-            setPermissionsTeamId($current_team_id);
-            $this->unsetRelation('roles')->unsetRelation('permissions');
-        }
-    }
 }
